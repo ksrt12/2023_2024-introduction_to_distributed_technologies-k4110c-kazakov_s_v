@@ -22,7 +22,7 @@ kubectl label nodes itmo zone=kronva
 kubectl label nodes itmo-m02 zone=lomo
 ```
 Результат
-```
+```bash
 kubectl get nodes -o custom-columns='NAME:.metadata.name,ZONE:.metadata.labels.zone'
 NAME       ZONE
 itmo       kronva
@@ -36,13 +36,20 @@ kubectl patch ippool default-ipv4-ippool --type='merge' -p '{"spec":{"disabled":
 kubectl apply -f mainfests
 ```
 Результат
-```
+```bash
 kubectl get pods -l app=frontend -o wide
 NAME                        READY   STATUS    RESTARTS   AGE   IP             NODE       NOMINATED NODE   READINESS GATES
 frontend-855cfc4596-dv6t2   1/1     Running   0          11m   10.200.1.66    itmo       <none>           <none>
 frontend-855cfc4596-w4tq4   1/1     Running   0          11m   10.200.0.131   itmo-m02   <none>           <none>
 ```
 IP-адреса запущенных подов находся в заданных ранее пулах
+
+## Пинг соседнего пода
+```bash
+ping frontend-855cfc4596-dv6t2
+ping: frontend-855cfc4596-dv6t2: Name or service not known
+```
+Вероятно, это связано с тем, что coredns не знает о новых подсетях, в которых созданы поды
 
 ## Проборс портов на локальный ПК
 ```bash
