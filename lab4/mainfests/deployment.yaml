@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  namespace: lab4
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+        - name: frontend
+          image: ksrt12/itdt-contained-frontend:node16
+          env:
+            - name: REACT_APP_USERNAME
+              value: KazakovSV
+            - name: REACT_APP_COMPANY_NAME
+              value: "DIS ITMO"
+          ports:
+            - name: http
+              containerPort: 3000
+              protocol: TCP
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: "app"
+                    operator: In
+                    values:
+                      - frontend
+              topologyKey: "kubernetes.io/hostname"
